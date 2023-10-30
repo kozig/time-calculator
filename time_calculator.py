@@ -1,6 +1,7 @@
-def add_time(start, duration, d="d"):
+def add_time(start, duration, day="day"):
   # Dict for counting days, if selected.
-  day = {
+  hr, minutes, count_days = int, int, int
+  days = {
          1: "Monday", 
          2: "Tuesday", 
          3: "Wednesday", 
@@ -11,28 +12,43 @@ def add_time(start, duration, d="d"):
         }
   # format day input, first make all char lowercase
   # then capitalize first char.
-  d = d.lower().capitalize() 
+  if bool(day):
+    day = day.lower().capitalize() 
   # split start time into hour, minute, and am/pm.
   t = start.split()
   # partition hour and minutes from start.
-  shr = t[0].partition(":")[0]
-  sm = t[0].partition(":")[2]
+  shr, sm = t[0].partition(":")[0], t[0].partition(":")[2]
   # partition hour and minutes from duration.
-  dhr = d[0].partition(":")[0]
-  dm = duration.partition(":")[2]
+  dhr, dm = duration.partition(":")[0], duration.partition(":")[2]
   
   am_pm = t[1]
-  
-  hr = int
-  minutes = int
-  
-  hr = shr + dhr
-  minutes = sm + dm
-  new_time = f'{hr} + ":" + {minutes} + " " + {am_pm}'
 
+  # Convert to 24hr.
+  if am_pm == "PM":
+    shr = int(shr) + 12
 
+  hr = int(shr) + int(dhr)
+  minutes = int(sm) + int(dm)
+  # Count days.
+  if hour > 24:
+    count_days += 1
 
+  if hr > 12:
+    hr = hr - 12
+    if am_pm == "PM":
+      am_pm = "AM"
+    else:
+      am_pm = "PM"
 
+  # convert back to 12hr clock
+  if hr > 12:
+    hr -= 12
+    am_pm = "AM"
+  # the number after the colon in minutes adds the leading zero.
+  if bool(day):
+    new_time = f'{hr}:{minutes:02} {am_pm}, {d}'
+  else: 
+    new_time = f'{hr}:{minutes:02} {am_pm}' 
 
   return new_time
 
